@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { useStore } from "../context/StoreContext";
 
@@ -179,7 +179,7 @@ const chairTypeSections: {
   },
 ];
 
-export default function CollectionsPage() {
+function CollectionsContent() {
   const { addToCart } = useStore();
   const searchParams = useSearchParams();
 
@@ -327,5 +327,13 @@ export default function CollectionsPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+export default function CollectionsPage() {
+  return (
+    <Suspense fallback={<div className="bg-[#f7faf8] pb-16" />}>
+      <CollectionsContent />
+    </Suspense>
   );
 }
