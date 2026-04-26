@@ -1,26 +1,178 @@
 @import "tailwindcss";
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* 🔥 KILA BRAND COLORS */
+  --primary: #2e7d32;
+  /* Dark Green */
+  --secondary: #63c66d;
+  /* Light Green */
+  --accent: #f4a300;
+  /* Yellow ⚡ */
+  --text-dark: #222222;
+  --bg-light: #ffffff;
+  /* 🌿 SURFACES */
+  --surface-base: #ffffff;
+  --surface-muted: #f8fdf9;
+  --surface-soft: #f4fbf5;
+  --surface-soft-2: #eef7f0;
+  --surface-cream: #f7f2ea;
+  --surface-cream-strong: #fff5e8;
+  /* 🌿 BORDERS */
+  --border-soft: #d9ebdc;
+  --border-input: #cfe2d2;
+  --border-warm: #e5d0b1;
+  --border-light: #ebf2ed;
+  /* 🌿 TEXT */
+  --text-primary: #2e7d32;
+  --text-secondary: #5f6368;
+  --text-deep: #1b4332;
+  --text-warm: #6b4a3f;
+  /* 🌿 BRAND STATES */
+  --brand-dark: #1b5e20;
+  --brand-hover: #49aa55;
+  --brand-soft-bg: #eaf7ec;
+  /* ⚡ ACCENT USAGE */
+  --accent-soft: #fff3d6;
+  --accent-hover: #d98c00;
+  /* CTA */
+  --cta-muted: #d9ebdc;
+  --cta-muted-hover: #cfe2d2;
+  --selection-text: #1f2937;
+  --background: var(--bg-light);
+  --foreground: var(--text-dark);
+  /* 🌈 SCALE */
+  --brand-50: #f4fbf5;
+  --brand-100: #e5f6e7;
+  --brand-200: #c4eac8;
+  --brand-300: #94d89a;
+  --brand-500: var(--secondary);
+  --brand-700: var(--primary);
+  --brand-900: #1b4332;
+  --accent-gold: var(--accent);
+  --success: #15803d;
+  --danger: #dc2626;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-500: var(--brand-500);
+  --color-brand-700: var(--brand-700);
+  --color-brand-900: var(--brand-900);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-surface-base: var(--surface-base);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-soft-2: var(--surface-soft-2);
+  --color-border-soft: var(--border-soft);
+  --color-border-input: var(--border-input);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-brand-hover: var(--brand-hover);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* 🌿 BASE */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  font-weight: 400;
+  overflow-x: hidden;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #222222;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+p,
+li,
+span {
+  color: #5f6368;
+}
+
+/* 🔥 SELECTION */
+
+::selection {
+  background: color-mix(in srgb, var(--secondary) 30%, transparent);
+}
+
+/* 🔥 PREMIUM BUTTON (UPDATED WITH BRAND FEEL) */
+
+.premium-btn {
+  background: linear-gradient(135deg, var(--secondary), var(--primary));
+  color: white;
+  box-shadow: 0 8px 20px rgba(46, 125, 50, 0.25);
+  transition: all 0.3s ease;
+}
+
+.premium-btn:hover {
+  background: linear-gradient(135deg, var(--primary), var(--brand-dark));
+  box-shadow: 0 12px 28px rgba(46, 125, 50, 0.35);
+  transform: translateY(-2px);
+}
+
+/* ⚡ ACCENT BUTTON (NEW) */
+
+.accent-btn {
+  background: var(--accent);
+  color: white;
+}
+
+.accent-btn:hover {
+  background: var(--accent-hover);
+}
+
+/* 🟢 CARD */
+
+.premium-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid rgba(99, 198, 109, 0.2);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;
+}
+
+.premium-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* 🟡 ACCENT HIGHLIGHT */
+
+.highlight {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* 🔥 SCROLLBAR */
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  scrollbar-width: none;
 }
