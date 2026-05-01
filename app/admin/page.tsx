@@ -333,12 +333,12 @@ export default function AdminPage() {
 
   const resolvedAdminApiKey = adminApiKey.trim() || ENV_ADMIN_KEY;
 
-  const getAdminHeaders = (): Record<string, string> => {
+  const getAdminHeaders = useCallback((): Record<string, string> => {
     if (!resolvedAdminApiKey) return {};
     return { "X-Admin-Api-Key": resolvedAdminApiKey };
-  };
+  }, [resolvedAdminApiKey]);
 
-  const fetchJson = async <T,>(url: string): Promise<T> => {
+  const fetchJson = useCallback(async <T,>(url: string): Promise<T> => {
     const response = await fetch(url, {
       headers: getAdminHeaders(),
     });
@@ -347,9 +347,21 @@ export default function AdminPage() {
       throw new Error(text || "fetch failed");
     }
     return response.json();
-  };
+  }, [getAdminHeaders]);
 
   const loadAll = useCallback(async () => {
+    if (!resolvedAdminApiKey) {
+      setStats(null);
+      setCollections([]);
+      setProducts([]);
+      setContacts([]);
+      setClaims([]);
+      setSupportRequests([]);
+      setOrders([]);
+      setUsers([]);
+      return;
+    }
+
     const [
       collectionResult,
       productResult,
@@ -389,9 +401,10 @@ export default function AdminPage() {
     );
     setOrders(ordersResult.status === "fulfilled" ? (ordersResult.value.results ?? []) : []);
     setUsers(usersResult.status === "fulfilled" ? (usersResult.value.results ?? []) : []);
-  }, [API_BASE, resolvedAdminApiKey]);
+  }, [API_BASE, fetchJson, resolvedAdminApiKey]);
 
   useEffect(() => {
+    if (!resolvedAdminApiKey) return;
     const timer = window.setTimeout(() => {
       void loadAll().catch((err: unknown) =>
         showMessage(
@@ -400,16 +413,17 @@ export default function AdminPage() {
       );
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [loadAll]);
+  }, [loadAll, resolvedAdminApiKey]);
 
   useEffect(() => {
+    if (!resolvedAdminApiKey) return;
     const interval = window.setInterval(() => {
       void loadAll().catch(() => {
         // Silent retry loop for live dashboard counters.
       });
     }, 15000);
     return () => window.clearInterval(interval);
-  }, [loadAll]);
+  }, [loadAll, resolvedAdminApiKey]);
 
   const filteredProducts = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();

@@ -11,3 +11,7 @@ export function getApiBaseUrl(): string {
   // ✔️ Always safe fallback (production friendly)
   return "https://backend-ub3v.onrender.com/api";
 }
+
+export function getDefaultAdminApiKey(): string {
+  return (process.env.NEXT_PUBLIC_ADMIN_API_KEY ?? "").trim();
+}
