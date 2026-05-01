@@ -283,12 +283,15 @@ export default function Home() {
         if (!response.ok) throw new Error("products fetch failed");
         const payload = (await response.json()) as { results?: HomeProduct[] };
         const items = payload.results ?? [];
-        const visible = items.filter((item) => item.show_on_home);
-        if (visible.length > 0) {
-          setHomeProducts(visible);
-        } else {
-          setHomeProducts(items.slice(0, 10));
-        }
+        // "All Collections" section should not hide products when show_on_home is false.
+        // Keep home-curated products first, then show remaining catalog items.
+        const ordered = [...items].sort((a, b) => {
+          const aHome = a.show_on_home ? 1 : 0;
+          const bHome = b.show_on_home ? 1 : 0;
+          if (aHome !== bHome) return bHome - aHome;
+          return (a.home_order ?? Number.MAX_SAFE_INTEGER) - (b.home_order ?? Number.MAX_SAFE_INTEGER);
+        });
+        setHomeProducts(ordered);
       } catch {
         setHomeProducts([]);
       }
