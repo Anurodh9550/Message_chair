@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 // ✅ SEO Metadata
 export const metadata: Metadata = {
-  title: "Robocura Massage Chair",
+  title: "Kila Massage Chair",
   description:
     "Buy premium massage chairs with advanced features like zero gravity, heat therapy & more.",
 };
