@@ -19,6 +19,20 @@ export function getApiBaseUrl(): string {
     }
   }
 
+  // In production/public domains, never use localhost API targets.
+  if (typeof window !== "undefined" && window.location.hostname !== "localhost") {
+    try {
+      const parsed = new URL(normalized);
+      const isLocalTarget =
+        parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1";
+      if (isLocalTarget) {
+        return "https://backend-ub3v.onrender.com/api";
+      }
+    } catch {
+      // If URL parsing fails, keep existing value.
+    }
+  }
+
   return normalized;
 }
 
