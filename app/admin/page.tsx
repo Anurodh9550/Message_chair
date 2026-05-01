@@ -335,7 +335,10 @@ export default function AdminPage() {
 
   const getAdminHeaders = useCallback((): Record<string, string> => {
     if (!resolvedAdminApiKey) return {};
-    return { "X-Admin-Api-Key": resolvedAdminApiKey };
+    return {
+      "X-Admin-Api-Key": resolvedAdminApiKey,
+      Authorization: `Bearer ${resolvedAdminApiKey}`,
+    };
   }, [resolvedAdminApiKey]);
 
   const fetchJson = useCallback(async <T,>(url: string): Promise<T> => {
