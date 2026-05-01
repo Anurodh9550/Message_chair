@@ -1,42 +1,13 @@
-/** Django REST `api/` prefix — no trailing slash. */
 export function getApiBaseUrl(): string {
-  const raw =
-    process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000/api";
-  const trimmed = raw.replace(/\/$/, "");
-  const normalized = /\/api$/i.test(trimmed) ? trimmed : `${trimmed}/api`;
+  const envBase = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").trim();
 
-  // In local dev, prefer local backend even if env points to remote.
-  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
-    try {
-      const parsed = new URL(normalized);
-      const isLocalTarget =
-        parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1";
-      if (!isLocalTarget) {
-        return "http://127.0.0.1:8000/api";
-      }
-    } catch {
-      // If URL parsing fails, keep existing value.
-    }
+  if (envBase) {
+    const trimmed = envBase.replace(/\/$/, "");
+    return /\/api$/i.test(trimmed) ? trimmed : `${trimmed}/api`;
   }
 
-  // In production/public domains, never use localhost API targets.
-  if (typeof window !== "undefined" && window.location.hostname !== "localhost") {
-    try {
-      const parsed = new URL(normalized);
-      const isLocalTarget =
-        parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1";
-      if (isLocalTarget) {
-        return "https://backend-ub3v.onrender.com/api";
-      }
-    } catch {
-      // If URL parsing fails, keep existing value.
-    }
-  }
+  // ❌ REMOVE localhost fallback (ye problem create kar raha hai)
 
-  return normalized;
-}
-
-/** Optional admin key configured in frontend env. */
-export function getDefaultAdminApiKey(): string {
-  return (process.env.NEXT_PUBLIC_ADMIN_API_KEY ?? "").trim();
+  // ✔️ Always safe fallback (production friendly)
+  return "https://backend-ub3v.onrender.com/api";
 }

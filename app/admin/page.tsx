@@ -246,7 +246,7 @@ export default function AdminPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [users, setUsers] = useState<AppUser[]>([]);
   const [message, setMessage] = useState("");
-  const [adminApiKey] = useState(() => {
+  const [adminApiKey, setAdminApiKey] = useState(() => {
     if (typeof window === "undefined") return ENV_ADMIN_KEY;
     const saved = localStorage.getItem(ADMIN_KEY_STORAGE) ?? "";
     return saved || ENV_ADMIN_KEY;
@@ -311,6 +311,16 @@ export default function AdminPage() {
     setMessage(text);
     window.setTimeout(() => setMessage(""), 2200);
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const value = adminApiKey.trim();
+    if (!value) {
+      localStorage.removeItem(ADMIN_KEY_STORAGE);
+      return;
+    }
+    localStorage.setItem(ADMIN_KEY_STORAGE, value);
+  }, [adminApiKey]);
 
   const getResponseError = async (response: Response, fallback: string) => {
     const text = (await response.text()).trim();
@@ -1088,6 +1098,56 @@ export default function AdminPage() {
             Processing request... please wait.
           </div>
         ) : null}
+
+        <div
+          className={`mx-4 mt-3 rounded-xl border px-4 py-3 md:mx-6 ${
+            resolvedAdminApiKey
+              ? "border-emerald-200 bg-emerald-50"
+              : "border-amber-200 bg-amber-50"
+          }`}
+        >
+          <p
+            className={`text-sm font-semibold ${
+              resolvedAdminApiKey ? "text-emerald-900" : "text-amber-900"
+            }`}
+          >
+            {resolvedAdminApiKey ? "Admin API key configured" : "Admin API key required"}
+          </p>
+          <p
+            className={`mt-1 text-xs ${
+              resolvedAdminApiKey ? "text-emerald-800" : "text-amber-800"
+            }`}
+          >
+            Use backend <code>ADMIN_API_KEY</code> for protected admin APIs.
+          </p>
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+            <input
+              type="password"
+              value={adminApiKey}
+              onChange={(e) => setAdminApiKey(e.target.value)}
+              placeholder="Enter Admin API key"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none focus:ring-2 focus:ring-amber-300"
+            />
+            <button
+              type="button"
+              onClick={() => showMessage("Admin API key saved")}
+              className="rounded-lg px-4 py-2 text-sm font-semibold text-white"
+              style={{ backgroundColor: PURPLE }}
+            >
+              Save key
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setAdminApiKey("");
+                showMessage("Admin API key cleared");
+              }}
+              className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              Clear key
+            </button>
+          </div>
+        </div>
 
         <main className="flex-1 space-y-6 px-4 py-6 md:px-6">
           {activeTab === "dashboard" ? (
