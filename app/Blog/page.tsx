@@ -6,9 +6,9 @@ import { useState } from "react";
 
 const allBlogs = [
   {
-    title: "Boost Your Office Productivity with Robocura Massage Chairs",
+    title: "Boost Your Office Productivity with Kila Massage Chairs",
     desc: "In today’s fast-paced world, we spend most of our time sitting in front of our laptops or computers...",
-    img: "/blog1.png",
+    img: "/blog11.png",
   },
   {
     title: "Massage Chair Helps With Back Pain? Let’s Find Out",

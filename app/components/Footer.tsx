@@ -82,7 +82,7 @@ export default function Footer() {
           </h3>
           <div className="space-y-2">
             <p className="text-xs text-[var(--text-primary)] md:text-sm">📞 9135895389</p>
-            <p className="text-xs text-[var(--text-primary)] md:text-sm">📧 support@robocura.com</p>
+            <p className="text-xs text-[var(--text-primary)] md:text-sm"></p>
             <p className="text-xs text-[var(--text-primary)] md:text-sm">📍 India</p>
           </div>
         </div>
