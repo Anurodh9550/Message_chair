@@ -62,9 +62,9 @@ export default function ClaimWarrantyPage() {
   };
 
   return (
-    <div className="bg-[#f7faf8] py-10">
+    <div className="bg-[#f6f8fc] py-10">
       <section className="mx-auto w-[95%] max-w-3xl rounded-2xl border border-[#d8e6dc] bg-white p-6 shadow-sm sm:p-8">
-        <p className="text-xs uppercase tracking-[0.2em] text-[#63c66d]">
+        <p className="text-xs uppercase tracking-[0.2em] text-[#c7794a]">
           Support
         </p>
         <h1 className="mt-2 text-3xl font-semibold text-stone-900">
@@ -81,14 +81,14 @@ export default function ClaimWarrantyPage() {
               type="text"
               placeholder="Customer Name"
               required
-              className="rounded-lg border border-[#cfe2d2] px-3 py-2.5 outline-none focus:border-[#63c66d]"
+              className="rounded-lg border border-[#f0dccd] px-3 py-2.5 outline-none focus:border-[#c7794a]"
             />
             <input
               name="email"
               type="email"
               placeholder="Email"
               required
-              className="rounded-lg border border-[#cfe2d2] px-3 py-2.5 outline-none focus:border-[#63c66d]"
+              className="rounded-lg border border-[#f0dccd] px-3 py-2.5 outline-none focus:border-[#c7794a]"
             />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -97,13 +97,13 @@ export default function ClaimWarrantyPage() {
               type="text"
               placeholder="Phone Number"
               required
-              className="rounded-lg border border-[#cfe2d2] px-3 py-2.5 outline-none focus:border-[#63c66d]"
+              className="rounded-lg border border-[#f0dccd] px-3 py-2.5 outline-none focus:border-[#c7794a]"
             />
             <input
               name="purchaseDate"
               type="date"
               required
-              className="rounded-lg border border-[#cfe2d2] px-3 py-2.5 outline-none focus:border-[#63c66d]"
+              className="rounded-lg border border-[#f0dccd] px-3 py-2.5 outline-none focus:border-[#c7794a]"
             />
           </div>
           <input
@@ -111,20 +111,20 @@ export default function ClaimWarrantyPage() {
             type="text"
             placeholder="Product Name"
             required
-            className="w-full rounded-lg border border-[#cfe2d2] px-3 py-2.5 outline-none focus:border-[#63c66d]"
+            className="w-full rounded-lg border border-[#f0dccd] px-3 py-2.5 outline-none focus:border-[#c7794a]"
           />
           <textarea
             name="issue"
             placeholder="Describe issue"
             rows={5}
             required
-            className="w-full rounded-lg border border-[#cfe2d2] px-3 py-2.5 outline-none focus:border-[#63c66d]"
+            className="w-full rounded-lg border border-[#f0dccd] px-3 py-2.5 outline-none focus:border-[#c7794a]"
           />
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-lg bg-[#4f3a35] px-6 py-2.5 text-sm text-white transition hover:bg-[#5b4740]"
+            className="rounded-lg bg-[#7a4b2f] px-6 py-2.5 text-sm text-white transition hover:bg-[#5c3722]"
           >
             {isSubmitting ? "Submitting..." : "Kila Support"}
           </button>

@@ -58,11 +58,10 @@ export default function FloatingContactActions() {
         throw new Error("submit failed");
       }
       form.reset();
+      window.alert("Thank you! Your Kila Support request has been submitted.");
       setStatusMessage("Support request submitted successfully.");
-      window.setTimeout(() => {
-        setIsWarrantyOpen(false);
-        setStatusMessage("");
-      }, 1200);
+      setIsWarrantyOpen(false);
+      setStatusMessage("");
     } catch {
       setIsError(true);
       setStatusMessage("Submit failed. Please try again.");

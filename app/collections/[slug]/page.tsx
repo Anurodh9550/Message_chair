@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { use } from "react";
+import { use, useEffect, useState } from "react";
 import { useStore } from "../../context/StoreContext";
+import { getApiBaseUrl } from "../../utils/apiBase";
 
 type CollectionDetail = {
   slug: string;
@@ -12,6 +13,17 @@ type CollectionDetail = {
   oldPrice: string;
   image: string;
   highlights: string[];
+};
+
+type ApiProduct = {
+  id: number;
+  slug: string;
+  name: string;
+  short_description?: string;
+  price: string;
+  old_price?: string;
+  image_url?: string;
+  product_features?: string[];
 };
 
 const collectionDetails: CollectionDetail[] = [
@@ -138,8 +150,18 @@ const collectionDetails: CollectionDetail[] = [
   },
 ];
 
-const getNumericPrice = (value: string) =>
-  Number(value.replace(/Rs\.\s?/g, "").replace(/,/g, ""));
+const getNumericPrice = (value: string) => {
+  const cleaned = value.replace(/[^\d.]/g, "");
+  const parsed = Number(cleaned);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const formatCurrency = (value: string) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number(value || 0));
 
 export default function CollectionDetailPage({
   params,
@@ -148,14 +170,67 @@ export default function CollectionDetailPage({
 }) {
   const { addToCart } = useStore();
   const resolvedParams = use(params);
-  const product = collectionDetails.find(
+  const apiBase = getApiBaseUrl();
+  const localProduct = collectionDetails.find(
     (item) => item.slug === resolvedParams.slug,
   );
+  const [apiProduct, setApiProduct] = useState<CollectionDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        const response = await fetch(
+          `${apiBase}/products/?search=${encodeURIComponent(resolvedParams.slug)}`,
+          { cache: "no-store" },
+        );
+        if (!response.ok) throw new Error("product fetch failed");
+        const payload = (await response.json()) as { results?: ApiProduct[] };
+        const found = (payload.results ?? []).find(
+          (item) => item.slug === resolvedParams.slug,
+        );
+        if (!found) {
+          setApiProduct(null);
+          return;
+        }
+        setApiProduct({
+          slug: found.slug,
+          title: found.name,
+          subtitle: found.short_description || "Premium wellness collection.",
+          price: formatCurrency(found.price),
+          oldPrice: found.old_price
+            ? formatCurrency(found.old_price)
+            : formatCurrency(found.price),
+          image: found.image_url || "/items/p1.jpg",
+          highlights: found.product_features?.length
+            ? found.product_features
+            : ["Premium Build", "Comfort Therapy", "Daily Wellness"],
+        });
+      } catch {
+        setApiProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    void loadProduct();
+  }, [apiBase, resolvedParams.slug]);
+
+  const product = apiProduct ?? localProduct;
+
+  if (loading && !product) {
+    return (
+      <div className="bg-[#f6f8fc] pb-16 pt-28 text-[#4b2e2b]">
+        <section className="mx-auto w-[95%] max-w-[900px] rounded-2xl border border-[#f0dccd] bg-white p-8 text-center">
+          <p className="text-stone-600">Loading collection details...</p>
+        </section>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
-      <div className="bg-[#f7faf8] pb-16 pt-28 text-[#4f3a35]">
-        <section className="mx-auto w-[95%] max-w-[900px] rounded-2xl border border-[#d9ebdc] bg-white p-8 text-center">
+      <div className="bg-[#f6f8fc] pb-16 pt-28 text-[#4b2e2b]">
+        <section className="mx-auto w-[95%] max-w-[900px] rounded-2xl border border-[#f0dccd] bg-white p-8 text-center">
           <h1 className="text-2xl font-semibold text-stone-900">
             Collection not found
           </h1>
@@ -164,7 +239,7 @@ export default function CollectionDetailPage({
           </p>
           <Link
             href="/collections"
-            className="mt-5 inline-block rounded-lg bg-[#63c66d] px-5 py-2.5 text-sm font-medium text-white"
+            className="mt-5 inline-block rounded-lg bg-[#c7794a] px-5 py-2.5 text-sm font-medium text-white"
           >
             Back to all collections
           </Link>
@@ -174,8 +249,8 @@ export default function CollectionDetailPage({
   }
 
   return (
-    <div className="bg-[#f7faf8] pb-16 pt-28 text-[#4f3a35]">
-      <section className="mx-auto grid w-[95%] max-w-[1100px] gap-8 rounded-2xl border border-[#d9ebdc] bg-white p-6 md:grid-cols-2 md:p-10">
+    <div className="bg-[#f6f8fc] pb-16 pt-28 text-[#4b2e2b]">
+      <section className="mx-auto grid w-[95%] max-w-[1100px] gap-8 rounded-2xl border border-[#f0dccd] bg-white p-6 md:grid-cols-2 md:p-10">
         <div className="overflow-hidden rounded-xl bg-[#f8f8f8] p-4">
           <img
             src={product.image}
@@ -185,7 +260,7 @@ export default function CollectionDetailPage({
         </div>
 
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-[#63c66d]">
+          <p className="text-xs uppercase tracking-[0.2em] text-[#c7794a]">
             Collection
           </p>
           <h1 className="mt-2 text-3xl font-semibold text-stone-900">
@@ -218,7 +293,7 @@ export default function CollectionDetailPage({
                   price: getNumericPrice(product.price),
                 })
               }
-              className="rounded-lg bg-[#63c66d] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#49aa55]"
+              className="rounded-lg bg-[#c7794a] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#d18856]"
             >
               Add to cart
             </button>

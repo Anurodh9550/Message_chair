@@ -1,6 +1,6 @@
 export default function ReturnPolicyPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-12 text-[#4f3a35]">
+    <div className="mx-auto max-w-3xl px-6 py-12 text-[#4b2e2b]">
       <h1 className="text-3xl font-semibold text-stone-900">Return policy</h1>
       <p className="mt-4 text-sm leading-relaxed text-stone-600">
         We want you to be satisfied with your purchase. Return eligibility depends on the
@@ -14,7 +14,7 @@ export default function ReturnPolicyPage() {
       </ul>
       <p className="mt-8 text-sm text-stone-600">
         Start a return inquiry:{" "}
-        <a href="/contact" className="font-medium text-[#63c66d] underline">
+        <a href="/contact" className="font-medium text-[#c7794a] underline">
           Contact us
         </a>
         .

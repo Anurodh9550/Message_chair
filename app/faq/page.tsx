@@ -1,11 +1,11 @@
 export default function FaqPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-12 text-[#4f3a35]">
+    <div className="mx-auto max-w-3xl px-6 py-12 text-[#4b2e2b]">
       <h1 className="text-3xl font-semibold text-stone-900">Frequently asked questions</h1>
       <p className="mt-4 text-sm leading-relaxed text-stone-600">
         Find answers about orders, delivery, warranty, and product care. For anything
         not listed here, use{" "}
-        <a href="/contact" className="font-medium text-[#63c66d] underline">
+        <a href="/contact" className="font-medium text-[#c7794a] underline">
           Contact
         </a>{" "}
         and our team will respond as soon as possible.

@@ -62,7 +62,7 @@ export default function BlogsPage() {
     <section className="bg-white py-12">
       <div className="mx-auto w-[95%] max-w-[1280px]">
         {/* Heading */}
-        <h1 className="mb-10 text-3xl font-semibold text-[#4f3a35] sm:text-4xl">
+        <h1 className="mb-10 text-3xl font-semibold text-[#4b2e2b] sm:text-4xl">
           News
         </h1>
 
@@ -85,15 +85,15 @@ export default function BlogsPage() {
 
               {/* Content */}
               <div className="p-5">
-                <h2 className="text-lg font-semibold text-[#4f3a35] hover:underline">
+                <h2 className="text-lg font-semibold text-[#4b2e2b] hover:underline">
                   {item.title}
                 </h2>
 
-                <p className="mt-2 text-sm text-[#5b4740]">{item.desc}</p>
+                <p className="mt-2 text-sm text-[#6b4a3f]">{item.desc}</p>
 
                 <Link
                   href="/contact"
-                  className="premium-btn mt-3 inline-block rounded-md border border-[#63c66d] px-3 py-1.5 font-medium text-[#2f8a44] transition hover:bg-[#eaf7ec]"
+                  className="mt-3 inline-block rounded-md border border-[#c7794a] bg-[#fff8f2] px-3 py-1.5 font-semibold text-[#7a4b2f] transition-colors hover:bg-[#7a4b2f] hover:text-white"
                 >
                   Read More →
                 </Link>
@@ -107,7 +107,7 @@ export default function BlogsPage() {
           {/* Prev */}
           <button
             onClick={() => setPage((p) => Math.max(p - 1, 1))}
-            className="premium-btn rounded bg-[#d9ebdc] px-3 py-1 hover:bg-[#cfe2d2]"
+            className="premium-btn rounded bg-[#f0dccd] px-3 py-1 hover:bg-[#efd0bb]"
           >
             {"<"}
           </button>
@@ -119,8 +119,8 @@ export default function BlogsPage() {
               onClick={() => setPage(i + 1)}
               className={`premium-btn rounded px-3 py-1 ${
                 page === i + 1
-                  ? "bg-[#4f3a35] text-white"
-                  : "bg-[#d9ebdc] hover:bg-[#cfe2d2]"
+                  ? "bg-[#7a4b2f] text-white"
+                  : "bg-[#f0dccd] hover:bg-[#efd0bb]"
               }`}
             >
               {i + 1}
@@ -130,7 +130,7 @@ export default function BlogsPage() {
           {/* Next */}
           <button
             onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-            className="premium-btn rounded bg-[#d9ebdc] px-3 py-1 hover:bg-[#cfe2d2]"
+            className="premium-btn rounded bg-[#f0dccd] px-3 py-1 hover:bg-[#efd0bb]"
           >
             {">"}
           </button>

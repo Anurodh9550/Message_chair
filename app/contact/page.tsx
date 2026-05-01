@@ -49,6 +49,7 @@ export default function ContactPage() {
         return;
       }
       form.reset();
+      window.alert("Thank you! Your contact request has been submitted.");
       setStatusMessage("Thanks! Your message has been submitted successfully.");
     } catch {
       setIsError(true);
@@ -61,16 +62,16 @@ export default function ContactPage() {
   return (
     <div className="bg-white">
       {/* 🔥 HERO IMAGE */}
-      <div className="h-[220px] w-full overflow-hidden sm:h-[280px] md:h-[350px]">
-        <img
-          src="/contecbg.png"
-          alt="Contact Banner"
-          className="h-full w-full object-cover"
-        />
-      </div>
+      <div className="h-[400px] w-full overflow-hidden sm:h-[550px] md:h-[600px]">
+  <img
+    src="/contecbg.png"
+    alt="Contact Banner"
+    className="h-full w-full object-cover"
+  />
+</div>
       {/* 🔥 FORM SECTION */}
       <section className="mx-auto w-[95%] max-w-[900px] py-12">
-        <h2 className="mb-6 text-xl font-semibold text-[#4f3a35] sm:text-2xl">
+        <h2 className="mb-6 text-xl font-semibold text-[#4b2e2b] sm:text-2xl">
           Questions or comments? Get in touch and we&apos;ll be happy to help.
         </h2>
 
@@ -81,14 +82,14 @@ export default function ContactPage() {
               type="text"
               placeholder="Name *"
               required
-              className="w-full rounded-md border border-[#cfe2d2] p-3 outline-none focus:border-[#5b4740]"
+              className="w-full rounded-md border border-[#f0dccd] p-3 outline-none focus:border-[#7a4b2f]"
             />
             <input
               name="email"
               type="email"
               placeholder="Email *"
               required
-              className="w-full rounded-md border border-[#cfe2d2] p-3 outline-none focus:border-[#5b4740]"
+              className="w-full rounded-md border border-[#f0dccd] p-3 outline-none focus:border-[#7a4b2f]"
             />
           </div>
 
@@ -96,7 +97,7 @@ export default function ContactPage() {
             name="phone"
             type="text"
             placeholder="Phone number"
-            className="w-full rounded-md border border-[#cfe2d2] p-3 outline-none focus:border-[#5b4740]"
+            className="w-full rounded-md border border-[#f0dccd] p-3 outline-none focus:border-[#7a4b2f]"
           />
 
           <textarea
@@ -104,13 +105,13 @@ export default function ContactPage() {
             placeholder="Comment"
             rows={5}
             required
-            className="w-full rounded-md border border-[#cfe2d2] p-3 outline-none focus:border-[#5b4740]"
+            className="w-full rounded-md border border-[#f0dccd] p-3 outline-none focus:border-[#7a4b2f]"
           />
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="premium-btn w-full rounded-md bg-[#4f3a35] px-6 py-3 text-white transition hover:bg-[#5b4740] sm:w-auto"
+            className="premium-btn w-full rounded-md bg-[#7a4b2f] px-6 py-3 text-white transition hover:bg-[#5c3722] sm:w-auto"
           >
             {isSubmitting ? "Sending..." : "Send"}
           </button>
@@ -126,21 +127,21 @@ export default function ContactPage() {
       </section>
 
       {/* 🔥 GREEN INFO CARDS */}
-      <section className="bg-gradient-to-r from-[#5b4740] to-[#4f3a35] py-10">
+      <section className="bg-gradient-to-r from-[#c7794a] to-[#7a4b2f] py-10">
         <div className="mx-auto grid w-[95%] max-w-[1280px] gap-6 md:grid-cols-3">
-          <div className="rounded-xl bg-[#4f3a35] p-6 text-white shadow-md">
+          <div className="rounded-xl bg-[#7a4b2f] p-6 text-white shadow-md">
             <h3 className="text-lg font-semibold mb-2">For Service Queries</h3>
             <p className="text-sm">E-mail: customercare@robocura.com</p>
             <p className="text-sm">Call: +91 9910339544</p>
           </div>
 
-          <div className="rounded-xl bg-[#4f3a35] p-6 text-white shadow-md">
+          <div className="rounded-xl bg-[#7a4b2f] p-6 text-white shadow-md">
             <h3 className="text-lg font-semibold mb-2">For Product Queries</h3>
             <p className="text-sm">E-mail: enquiry@robocura.com</p>
             <p className="text-sm">Call: +91 9910339544</p>
           </div>
 
-          <div className="rounded-xl bg-[#4f3a35] p-6 text-white shadow-md">
+          <div className="rounded-xl bg-[#7a4b2f] p-6 text-white shadow-md">
             <h3 className="text-lg font-semibold mb-2">
               For Dealerships Queries
             </h3>

@@ -8,14 +8,14 @@ export default function CartPage() {
 
   return (
     <section className="mx-auto w-[95%] max-w-[980px] py-14">
-      <h1 className="text-3xl font-semibold text-[#4f3a35]">Your Cart</h1>
+      <h1 className="text-3xl font-semibold text-[#4b2e2b]">Your Cart</h1>
 
       {cartItems.length === 0 ? (
-        <div className="mt-6 rounded-lg border border-[#d9ebdc] bg-white p-6">
-          <p className="text-[#5b4740]">Your cart is empty.</p>
+        <div className="mt-6 rounded-lg border border-[#f0dccd] bg-white p-6">
+          <p className="text-[#6b4a3f]">Your cart is empty.</p>
           <Link
             href="/"
-            className="mt-4 inline-block rounded bg-[#4f3a35] px-4 py-2 text-sm text-white"
+            className="mt-4 inline-block rounded bg-[#7a4b2f] px-4 py-2 text-sm text-white"
           >
             Continue Shopping
           </Link>
@@ -25,7 +25,7 @@ export default function CartPage() {
           {cartItems.map((item) => (
             <div
               key={item.id}
-              className="flex flex-col gap-4 rounded-lg border border-[#d9ebdc] bg-white p-4 md:flex-row md:items-center md:justify-between"
+              className="flex flex-col gap-4 rounded-lg border border-[#f0dccd] bg-white p-4 md:flex-row md:items-center md:justify-between"
             >
               <div className="flex items-center gap-3 sm:gap-4">
                 <img
@@ -34,10 +34,10 @@ export default function CartPage() {
                   className="h-16 w-16 object-contain"
                 />
                 <div className="min-w-0">
-                  <p className="line-clamp-2 font-medium text-[#4f3a35]">
+                  <p className="line-clamp-2 font-medium text-[#4b2e2b]">
                     {item.name}
                   </p>
-                  <p className="text-sm text-[#5b4740]">
+                  <p className="text-sm text-[#6b4a3f]">
                     Rs. {item.price.toLocaleString("en-IN")}
                   </p>
                 </div>
@@ -46,14 +46,14 @@ export default function CartPage() {
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <button
                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                  className="rounded border border-[#cfe2d2] px-3 py-1"
+                  className="rounded border border-[#f0dccd] px-3 py-1"
                 >
                   -
                 </button>
                 <span>{item.quantity}</span>
                 <button
                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                  className="rounded border border-[#cfe2d2] px-3 py-1"
+                  className="rounded border border-[#f0dccd] px-3 py-1"
                 >
                   +
                 </button>
@@ -67,13 +67,13 @@ export default function CartPage() {
             </div>
           ))}
 
-          <div className="rounded-lg border border-[#d9ebdc] bg-white p-5">
+          <div className="rounded-lg border border-[#f0dccd] bg-white p-5">
             <p className="text-lg font-semibold">
               Total: Rs. {cartTotal.toLocaleString("en-IN")}
             </p>
             <Link
               href="/checkout"
-              className="mt-3 inline-block rounded bg-[#63c66d] px-4 py-2 text-white"
+              className="mt-3 inline-block rounded bg-[#c7794a] px-4 py-2 text-white"
             >
               Proceed to Checkout
             </Link>

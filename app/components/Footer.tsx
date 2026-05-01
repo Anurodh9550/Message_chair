@@ -4,43 +4,44 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-stone-200 bg-white px-6 pb-3 pt-5 md:px-12">
-      <div className="grid gap-5 md:grid-cols-4">
+    <footer className="hero-bg mt-10 border-t border-[var(--border-light)] px-6 pb-4 pt-10 md:px-12">
+      <div className="mx-auto grid w-full max-w-[1280px] gap-6 md:grid-cols-4">
         {/* Logo + About */}
-        <div>
+        <div className="rounded-2xl border border-[var(--border-soft)] bg-[var(--card)] p-5 shadow-sm">
           <Link
             href="/"
-            className="mb-1 inline-flex flex-col items-start rounded-sm px-1 py-0.5 transition hover:bg-stone-50"
+            className="mb-3 inline-flex flex-col items-start rounded-md px-1 py-1 transition hover:bg-[var(--surface-muted)]"
           >
             <img
               src="/newlogo2.png"
               alt="Kila Massage Wellness"
-              className="h-7 w-auto object-contain"
+              className="h-8 w-auto object-contain"
             />
-            <p className="text-xs leading-relaxed text-stone-600 md:text-sm">
-            Experience ultimate comfort with our premium massage chairs.
-            Designed for relaxation, health, and luxury.
-          </p>
+            <p className="max-w-[26ch] text-xs leading-relaxed text-[var(--text-primary)] md:text-sm">
+              Experience ultimate comfort with our premium massage chairs.
+              Designed for relaxation, health, and luxury.
+            </p>
           </Link>
-
-         
+          <p className="inline-flex rounded-full bg-[var(--brand-50)] px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-[var(--text-warm)] ring-1 ring-[var(--border-warm)]">
+            Corporate Wellness Partner
+          </p>
         </div>
 
         {/* Quick Links */}
-        <div>
-          <h3 className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-stone-900">
+        <div className="rounded-2xl border border-[var(--border-soft)] bg-[var(--card)] p-5 shadow-sm">
+          <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-primary)]">
             Quick Links
           </h3>
-          <ul className="space-y-1.5 text-sm text-stone-600">
+          <ul className="space-y-2 text-sm text-[var(--text-primary)]">
             {["Home", "About", "Collections", "Blogs", "Contact"].map(
               (item, i) => (
                 <li key={i}>
                   <Link
                     href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                    className="group relative inline-block text-stone-600 transition duration-300 hover:text-stone-900"
+                    className="group relative inline-block text-[var(--text-primary)] transition duration-300 hover:translate-x-0.5 hover:text-[var(--brand-dark)]"
                   >
                     {item}
-                    <span className="absolute left-0 -bottom-1 h-[1px] w-0 bg-stone-500 transition-all duration-300 group-hover:w-full"></span>
+                    <span className="absolute left-0 -bottom-1 h-[1px] w-0 bg-[var(--secondary)] transition-all duration-300 group-hover:w-full"></span>
                   </Link>
                 </li>
               ),
@@ -49,11 +50,11 @@ export default function Footer() {
         </div>
 
         {/* Support */}
-        <div>
-          <h3 className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-stone-900">
+        <div className="rounded-2xl border border-[var(--border-soft)] bg-[var(--card)] p-5 shadow-sm">
+          <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-primary)]">
             Support
           </h3>
-          <ul className="space-y-1.5 text-sm text-stone-600">
+          <ul className="space-y-2 text-sm text-[var(--text-primary)]">
             {[
               { label: "FAQ", href: "/faq" },
               { label: "Shipping Policy", href: "/shipping-policy" },
@@ -64,10 +65,10 @@ export default function Footer() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="group relative inline-block text-stone-600 transition duration-300 hover:text-stone-900"
+                  className="group relative inline-block text-[var(--text-primary)] transition duration-300 hover:translate-x-0.5 hover:text-[var(--brand-dark)]"
                 >
                   {item.label}
-                  <span className="absolute left-0 -bottom-1 h-[1px] w-0 bg-stone-500 transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute left-0 -bottom-1 h-[1px] w-0 bg-[var(--secondary)] transition-all duration-300 group-hover:w-full" />
                 </Link>
               </li>
             ))}
@@ -75,18 +76,20 @@ export default function Footer() {
         </div>
 
         {/* Contact */}
-        <div>
-          <h3 className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-stone-900">
+        <div className="rounded-2xl border border-[var(--border-soft)] bg-[var(--card)] p-5 shadow-sm">
+          <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-primary)]">
             Contact Us
           </h3>
-          <p className="text-xs text-stone-600 md:text-sm">📞 9135895389</p>
-          <p className="text-xs text-stone-600 md:text-sm">📧 support@robocura.com</p>
-          <p className="text-xs text-stone-600 md:text-sm">📍 India</p>
+          <div className="space-y-2">
+            <p className="text-xs text-[var(--text-primary)] md:text-sm">📞 9135895389</p>
+            <p className="text-xs text-[var(--text-primary)] md:text-sm">📧 support@robocura.com</p>
+            <p className="text-xs text-[var(--text-primary)] md:text-sm">📍 India</p>
+          </div>
         </div>
       </div>
 
       {/* Bottom */}
-      <div className="mt-4 border-t border-stone-200 pt-2 text-center text-[11px] tracking-wide text-stone-500">
+      <div className="mx-auto mt-6 w-full max-w-[1280px] border-t border-[var(--border-light)] pt-3 text-center text-[11px] tracking-[0.1em] text-[var(--text-warm)]">
         © 2026 Kila. All rights reserved.
       </div>
     </footer>

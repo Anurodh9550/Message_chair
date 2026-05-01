@@ -62,80 +62,83 @@ export default function AboutPage() {
   return (
     <div>
       {/* 🔥 HERO SECTION */}
-      <section className="relative flex min-h-[380px] items-center overflow-auto text-white [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:min-h-[300px]">
-        {/* Background Video */}
-        <div className="absolute inset-0 overflow-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-          <video
-            src="/videos/video2.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute left-0 top-0 h-[200%] w-[115%] min-h-full min-w-full object-cover"
-          />
-        </div>
+     <section className="relative flex min-h-[500px] items-center overflow-hidden text-white md:min-h-[650px]">
+  
+  {/* Background Video */}
+  <div className="absolute inset-0">
+    <video
+      src="/videos/video2.mp4"
+      autoPlay
+      loop
+      muted
+      playsInline
+      className="absolute left-0 top-0 h-[120%] w-[120%] object-cover"
+    />
+  </div>
 
-        {/* Content */}
-        <div className="relative z-10 mx-auto grid w-[95%] max-w-[1280px] items-center gap-8 py-8 md:grid-cols-2 md:gap-10">
-          {/* LEFT TEXT */}
-          <div>
-            <h1 className="text-3xl font-semibold leading-tight text-white drop-shadow-[0_2px_12px_rgba(255,255,255,0.25)] md:text-4xl">
-              Robotic Care, Designed for Life
-            </h1>
+  {/* Content */}
+  <div className="relative z-10 mx-auto grid w-[95%] max-w-[1280px] items-center gap-10 py-10 md:grid-cols-2">
+    
+    {/* LEFT TEXT */}
+    <div>
+      <h1 className="text-4xl font-semibold leading-tight text-white md:text-5xl">
+        Robotic Care, Designed for Life
+      </h1>
 
-            <div className="w-20 h-[2px] bg-white my-4"></div>
+      <div className="w-24 h-[2px] bg-white my-5"></div>
 
-            <p className="text-base text-white/95 drop-shadow-[0_1px_8px_rgba(255,255,255,0.18)] md:text-lg">
-              Since 2016, redefining wellness through intelligent massage
-              technology.
-            </p>
-          </div>
+      <p className="text-lg text-white/95 md:text-xl">
+        Since 2016, redefining wellness through intelligent massage
+        technology.
+      </p>
+    </div>
 
-          {/* 🔥 RIGHT SIDE IMAGE SLIDER */}
-          <div className="flex justify-center md:justify-end">
-            <div className="relative h-[210px] w-[210px] md:h-[250px] md:w-[250px]">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0, rotate: -180 }}
-                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                  exit={{ opacity: 0, scale: 0, rotate: 180 }}
-                  transition={{ duration: 0.7 }}
-                  className="absolute right-0 h-[210px] w-[210px] overflow-hidden rounded-full md:right-[-40px] md:h-[250px] md:w-[250px]"
-                >
-                  <img
-                    src={images[index]}
-                    alt="Massage Chair"
-                    className="w-full h-full object-cover brightness-150 contrast-125 saturate-110"
-                  />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
-      </section>
+    {/* RIGHT IMAGE */}
+    <div className="flex justify-center md:justify-end">
+      <div className="relative h-[280px] w-[280px] md:h-[340px] md:w-[340px]">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, scale: 0, rotate: -180 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            exit={{ opacity: 0, scale: 0, rotate: 180 }}
+            transition={{ duration: 0.7 }}
+            className="absolute right-0 h-[280px] w-[280px] overflow-hidden rounded-full md:right-[-50px] md:h-[340px] md:w-[340px]"
+          >
+            <img
+              src={images[index]}
+              alt="Massage Chair"
+              className="w-full h-full object-cover brightness-150 contrast-125 saturate-110 scale-105"
+            />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+
+  </div>
+</section>
 
       {/* 🔥 OUR STORY SECTION */}
       <section className="bg-gray-100 py-16">
         <div className="mx-auto w-[95%] max-w-[900px] text-center">
-          <h2 className="mb-6 text-3xl font-semibold text-[#4f3a35] md:text-4xl">
+          <h2 className="mb-6 text-3xl font-semibold text-[#4b2e2b] md:text-4xl">
             OUR STORY
           </h2>
 
-          <p className="mb-4 leading-relaxed text-[#5b4740]">
+          <p className="mb-4 leading-relaxed text-[#6b4a3f]">
             At Kila, we believe wellness is not a luxury—it is a necessity,
             thoughtfully enhanced through modern technology and intelligent
             design.
           </p>
 
-          <p className="mb-4 leading-relaxed text-[#5b4740]">
+          <p className="mb-4 leading-relaxed text-[#6b4a3f]">
             Our name reflects strength, comfort, and reliability. At Kila, we
             are committed to delivering advanced massage solutions that combine
             innovation with everyday convenience, bringing relaxation directly
             into your home.
           </p>
 
-          <p className="mb-4 leading-relaxed text-[#5b4740]">
+          <p className="mb-4 leading-relaxed text-[#6b4a3f]">
             Founded with a vision to redefine comfort, Kila focuses on creating
             premium massage chairs that offer precision, durability, and
             long-lasting performance. Each product is carefully designed to meet
@@ -143,13 +146,13 @@ export default function AboutPage() {
             therapeutic benefits.
           </p>
 
-          <p className="mb-4 leading-relaxed text-[#5b4740]">
+          <p className="mb-4 leading-relaxed text-[#6b4a3f]">
             Over time, we have expanded our range from compact massage solutions
             to full-body advanced massage chairs, ensuring every user
             experiences the perfect balance of technology and relaxation.
           </p>
 
-          <p className="leading-relaxed text-[#5b4740]">
+          <p className="leading-relaxed text-[#6b4a3f]">
             What truly defines Kila is the trust of our customers. Their
             satisfaction and positive experiences inspire us to continuously
             improve and innovate. For us, wellness is not a one-time purchase—it
@@ -161,15 +164,15 @@ export default function AboutPage() {
       <section className="bg-white py-16">
         <div className="mx-auto w-[95%] max-w-[1280px]">
           {/* TOP RIGHT SHAPE */}
-          <div className="ml-auto mb-6 h-[40px] w-[160px] rounded-l-full bg-[#63c66d] sm:h-[50px] sm:w-[250px]"></div>
+          <div className="ml-auto mb-6 h-[40px] w-[160px] rounded-l-full bg-[#c7794a] sm:h-[50px] sm:w-[250px]"></div>
 
           {/* HEADING */}
           <h2 className="text-3xl font-bold sm:text-4xl md:text-6xl">
-            Why <span className="text-[#63c66d]">Kila?</span>
+            Why <span className="text-[#c7794a]">Kila?</span>
           </h2>
 
           {/* SUBTEXT */}
-          <p className="mt-4 max-w-[900px] text-base italic text-[#5b4740] sm:text-lg">
+          <p className="mt-4 max-w-[900px] text-base italic text-[#6b4a3f] sm:text-lg">
             Under only 10+ years in the massage chair industry, Kila has gained
             the trust of both the old and the young.
           </p>
@@ -202,7 +205,7 @@ export default function AboutPage() {
       <section className="bg-white py-16">
         <div className="mx-auto w-[95%] max-w-[1280px]">
           {/* Top Green Shape */}
-          <div className="mb-10 h-[42px] w-[180px] rounded-r-full bg-[#63c66d] sm:h-[60px] sm:w-[300px]"></div>
+          <div className="mb-10 h-[42px] w-[180px] rounded-r-full bg-[#c7794a] sm:h-[60px] sm:w-[300px]"></div>
 
           {/* Grid */}
           <div className="grid gap-6 md:grid-cols-2">
@@ -210,7 +213,7 @@ export default function AboutPage() {
               <motion.div
                 key={i}
                 whileHover={{ scale: 1.02 }}
-                className="rounded-xl bg-[#63c66d] p-6 text-white shadow-md transition hover:bg-[#57b861] hover:shadow-xl"
+                className="rounded-xl bg-[#c7794a] p-6 text-white shadow-md transition hover:bg-[#d18856] hover:shadow-xl"
               >
                 <h3 className="text-xl font-semibold mb-3">{item.title}</h3>
 

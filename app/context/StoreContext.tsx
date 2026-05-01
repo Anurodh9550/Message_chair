@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { getApiBaseUrl } from "../utils/apiBase";
 
 type Product = {
   id: string;
@@ -14,6 +15,7 @@ type CartItem = Product & {
 };
 
 type User = {
+  id: number;
   name: string;
   email: string;
 };
@@ -27,7 +29,20 @@ type StoreContextValue = {
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
-  login: (email: string, password: string) => { ok: boolean; message: string };
+  login: (
+    email: string,
+    password: string,
+  ) => Promise<{ ok: boolean; message: string }>;
+  register: (
+    name: string,
+    email: string,
+    password: string,
+  ) => Promise<{ ok: boolean; message: string }>;
+  forgotPassword: (
+    email: string,
+    newPassword: string,
+    confirmPassword: string,
+  ) => Promise<{ ok: boolean; message: string }>;
   logout: () => void;
 };
 
@@ -35,6 +50,15 @@ const StoreContext = createContext<StoreContextValue | null>(null);
 
 const USER_KEY = "kila_user";
 const CART_KEY = "kila_cart";
+const API_BASE = getApiBaseUrl();
+
+const getAuthApiBases = (): string[] => {
+  const bases = [API_BASE];
+  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+    bases.push("http://127.0.0.1:8000/api", "http://localhost:8000/api");
+  }
+  return Array.from(new Set(bases.map((item) => item.replace(/\/$/, ""))));
+};
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
@@ -96,17 +120,134 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setCartItems([]);
   };
 
-  const login = (email: string, password: string) => {
+  const login = async (email: string, password: string) => {
     if (!email || !password) {
       return { ok: false, message: "Email and password required." };
     }
-    const name = email.split("@")[0];
-    setUser({ name, email });
-    return { ok: true, message: "Login successful." };
+
+    let lastNetworkError = false;
+    for (const base of getAuthApiBases()) {
+      try {
+        const response = await fetch(`${base}/auth/login/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        const payload = (await response.json()) as
+          | User
+          | {
+              detail?: string;
+            };
+
+        if (!response.ok) {
+          return {
+            ok: false,
+            message:
+              "detail" in payload && payload.detail
+                ? payload.detail
+                : "Login failed. Please check credentials.",
+          };
+        }
+
+        setUser(payload as User);
+        return { ok: true, message: "Login successful." };
+      } catch {
+        lastNetworkError = true;
+      }
+    }
+    return {
+      ok: false,
+      message: lastNetworkError ? "Unable to connect to server." : "Login failed.",
+    };
+  };
+
+  const register = async (name: string, email: string, password: string) => {
+    if (!name || !email || !password) {
+      return { ok: false, message: "Name, email and password are required." };
+    }
+    let lastNetworkError = false;
+    for (const base of getAuthApiBases()) {
+      try {
+        const response = await fetch(`${base}/auth/register/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password }),
+        });
+        const payload = (await response.json()) as
+          | User
+          | {
+              email?: string[];
+              password?: string[];
+              detail?: string;
+            };
+
+        if (!response.ok) {
+          const errorMessage =
+            ("email" in payload && payload.email?.[0]) ||
+            ("password" in payload && payload.password?.[0]) ||
+            ("detail" in payload && payload.detail) ||
+            "Registration failed.";
+          return { ok: false, message: errorMessage };
+        }
+
+        setUser(payload as User);
+        return { ok: true, message: "Registration successful." };
+      } catch {
+        lastNetworkError = true;
+      }
+    }
+    return {
+      ok: false,
+      message: lastNetworkError ? "Unable to connect to server." : "Registration failed.",
+    };
   };
 
   const logout = () => {
     setUser(null);
+  };
+
+  const forgotPassword = async (
+    email: string,
+    newPassword: string,
+    confirmPassword: string,
+  ) => {
+    if (!email || !newPassword || !confirmPassword) {
+      return { ok: false, message: "All fields are required." };
+    }
+    let lastNetworkError = false;
+    for (const base of getAuthApiBases()) {
+      try {
+        const response = await fetch(`${base}/auth/forgot-password/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            new_password: newPassword,
+            confirm_password: confirmPassword,
+          }),
+        });
+        const payload = (await response.json()) as {
+          detail?: string;
+          confirm_password?: string[];
+        };
+        if (!response.ok) {
+          return {
+            ok: false,
+            message:
+              payload.confirm_password?.[0] ||
+              payload.detail ||
+              "Password reset failed.",
+          };
+        }
+        return { ok: true, message: payload.detail || "Password reset successful." };
+      } catch {
+        lastNetworkError = true;
+      }
+    }
+    return {
+      ok: false,
+      message: lastNetworkError ? "Unable to connect to server." : "Password reset failed.",
+    };
   };
 
   const cartCount = useMemo(
@@ -129,6 +270,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     updateQuantity,
     clearCart,
     login,
+    register,
+    forgotPassword,
     logout,
   };
 

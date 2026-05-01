@@ -30,7 +30,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${poppins.variable} ${geistMono.variable}`}>
-      <body className="min-h-screen flex flex-col bg-white text-gray-800">
+      <body className="min-h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)]">
         <Providers>
           <SiteChrome>{children}</SiteChrome>
         </Providers>

@@ -119,6 +119,35 @@ const products = [
   },
 ];
 
+type HomeProduct = {
+  id: number;
+  name: string;
+  slug: string;
+  price: string;
+  old_price?: string;
+  image_url?: string;
+  collection_name: string;
+  in_stock: boolean;
+  show_on_home?: boolean;
+  home_order?: number;
+  product_features?: string[];
+};
+
+type DisplayProductCard = {
+  id: string;
+  slug?: string;
+  detailHref?: string;
+  name: string;
+  img: string;
+  hoverImg?: string;
+  price: string;
+  oldPrice: string;
+  discount: string;
+  tag: string;
+  category: string;
+  features?: string[];
+};
+
 type GoogleReview = {
   id: number;
   name: string;
@@ -201,11 +230,15 @@ export default function Home() {
   const { addToCart } = useStore();
   const apiBase = getApiBaseUrl();
 
-  const getNumericPrice = (value: string) =>
-    Number(value.replace(/Rs\.\s?/g, "").replace(/,/g, ""));
+  const getNumericPrice = (value: string) => {
+    const cleaned = value.replace(/[^\d.]/g, "");
+    const parsed = Number(cleaned);
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
   const [current, setCurrent] = useState(0);
   const [reviewList, setReviewList] = useState<GoogleReview[]>(fallbackReviews);
   const [reviewLoading, setReviewLoading] = useState(true);
+  const [homeProducts, setHomeProducts] = useState<HomeProduct[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -241,14 +274,80 @@ export default function Home() {
     void loadReviews();
   }, [apiBase]);
 
+  useEffect(() => {
+    const loadHomeProducts = async () => {
+      try {
+        const response = await fetch(`${apiBase}/products/?ordering=home_order`, {
+          cache: "no-store",
+        });
+        if (!response.ok) throw new Error("products fetch failed");
+        const payload = (await response.json()) as { results?: HomeProduct[] };
+        const items = payload.results ?? [];
+        const visible = items.filter((item) => item.show_on_home);
+        if (visible.length > 0) {
+          setHomeProducts(visible);
+        } else {
+          setHomeProducts(items.slice(0, 10));
+        }
+      } catch {
+        setHomeProducts([]);
+      }
+    };
+    void loadHomeProducts();
+  }, [apiBase]);
+
+  const formatCurrency = (value: string) =>
+    new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(Number(value || 0));
+
   const averageRating = (
     reviewList.reduce((sum, item) => sum + item.rating, 0) /
     Math.max(reviewList.length, 1)
   ).toFixed(1);
 
+  const displayProducts: DisplayProductCard[] =
+    homeProducts.length > 0
+      ? homeProducts.map((item) => ({
+          id: `api-${item.id}`,
+          slug: item.slug,
+          detailHref: `/collections/${item.slug}`,
+          name: item.name,
+          img: item.image_url || "/items/p1.jpg",
+          hoverImg: item.image_url || "/items/p1.jpg",
+          price: formatCurrency(item.price),
+          oldPrice: item.old_price
+            ? formatCurrency(item.old_price)
+            : formatCurrency(item.price),
+          discount:
+            item.old_price && Number(item.old_price) > Number(item.price)
+              ? `${Math.round(
+                  ((Number(item.old_price) - Number(item.price)) /
+                    Number(item.old_price)) *
+                    100,
+                )}%`
+              : "New",
+          tag: item.in_stock ? "Sale" : "Sold out",
+          category: item.collection_name,
+          features: item.product_features ?? [],
+        }))
+      : products.map((item) => ({
+          id: item.id,
+          name: item.name,
+          img: item.img,
+          hoverImg: item.hoverImg,
+          price: item.price,
+          oldPrice: item.oldPrice,
+          discount: item.discount,
+          tag: item.tag,
+          category: item.category,
+        }));
+
   return (
-    <div className="bg-[#f7faf8] text-[#4f3a35]">
-      <section className="relative h-[420px] w-full overflow-hidden md:h-[540px]">
+    <div className="bg-[#f6f8fc] text-[#2b2b2b]">
+      <section className="relative h-[550px] w-full overflow-hidden md:h-[700px]">
         {slides.map((slide, index) => (
           <motion.div
             key={index}
@@ -268,7 +367,7 @@ export default function Home() {
             />
 
             {/* LIGHT GRADIENT */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#f7f2ea]/60 via-[#f7f2ea]/20 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/68 via-black/42 to-transparent"></div>
 
             {/* CONTENT */}
             <div
@@ -278,39 +377,39 @@ export default function Home() {
             >
               <div className="max-w-2xl space-y-5">
                 {/* SUBTITLE */}
-                <p className="text-xs tracking-[0.3em] text-[#6b4a3f] uppercase">
+                <p className="text-xs tracking-[0.3em] text-white uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)]">
                   {slide.subtitle}
                 </p>
 
                 {/* TITLE */}
                 <h1
-                  className="text-4xl md:text-6xl font-semibold leading-tight text-[#4b2e2b]"
+                  className="text-4xl font-bold leading-tight text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.58)] md:text-6xl"
                   style={{ fontFamily: "Georgia, serif" }}
                 >
                   {slide.title}
                 </h1>
 
                 {/* DESCRIPTION */}
-                <p className="text-sm md:text-base text-[#6b4a3f] max-w-lg">
+                <p className="max-w-lg text-sm text-white md:text-base drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)]">
                   Official premium massage technology with modern wellness
                   comfort for home and office use.
                 </p>
 
                 {/* BADGE */}
-                <p className="inline-block rounded-full border border-[#63c66d] bg-white px-4 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#2f8a44]">
+                <p className="inline-block rounded-full border border-[var(--accent)] bg-black/25 px-4 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)] backdrop-blur-sm">
                   {slide.badge}
                 </p>
 
                 {/* FEATURES */}
                 <div
-                  className={`flex flex-wrap gap-3 text-sm text-[#4f3a35] ${
+                  className={`flex flex-wrap gap-3 text-sm text-white ${
                     slide.alignRight ? "justify-end" : "justify-start"
                   }`}
                 >
                   {slide.points.map((point) => (
                     <span
                       key={point}
-                      className="rounded-full border border-[#e5d0b1] bg-[#fff5e8] px-3 py-1"
+                      className="rounded-full border border-white/30 bg-black/20 px-3 py-1 backdrop-blur-sm"
                     >
                       {point}
                     </span>
@@ -325,14 +424,14 @@ export default function Home() {
                 >
                   <Link
                     href="/collections"
-                    className="rounded-lg bg-[#63c66d] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#49aa55] transition"
+                    className="rounded-lg bg-[#c7794a] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#d18856] transition"
                   >
                     Explore Collection
                   </Link>
 
                   <Link
                     href="/checkout"
-                    className="rounded-lg border border-[#4f3a35] bg-white px-5 py-2.5 text-sm font-medium text-[#4f3a35] hover:bg-[#4f3a35] hover:text-white transition"
+                    className="rounded-lg border border-[#1f2937] bg-white px-5 py-2.5 text-sm font-medium text-[#1f2937] hover:bg-[#1f2937] hover:text-white transition"
                   >
                     Buy Now
                   </Link>
@@ -349,7 +448,7 @@ export default function Home() {
               key={index}
               onClick={() => setCurrent(index)}
               className={`h-2.5 w-7 rounded-full transition ${
-                current === index ? "bg-[#4b2e2b]" : "bg-[#63c66d]"
+                current === index ? "bg-[#4b2e2b]" : "bg-[#c7794a]"
               }`}
             ></button>
           ))}
@@ -373,7 +472,7 @@ export default function Home() {
         </button>
       </section>
 
-      <section className="bg-[#63c66d] py-5 text-white">
+      <section className="border-y border-[var(--border-light)] bg-[color:rgba(248,243,236,0.9)] py-5 text-[var(--text-primary)]">
         <div className="mx-auto grid w-[95%] max-w-[1280px] gap-3 md:grid-cols-4">
           {[
             {
@@ -399,14 +498,16 @@ export default function Home() {
           ].map((item) => (
             <div
               key={item.title}
-              className="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 backdrop-blur-sm"
+              className="flex items-center gap-3 rounded-xl border border-[var(--border-soft)] bg-[var(--surface-base)] px-4 py-3"
             >
-              <div className="rounded-full bg-white/20 p-2">
-                <item.Icon className="h-5 w-5" />
+              <div className="rounded-full bg-[var(--surface-soft)] p-2">
+                <item.Icon className="h-5 w-5 text-[var(--primary)]" />
               </div>
               <div>
-                <p className="text-sm font-semibold leading-tight">{item.title}</p>
-                <p className="text-xs text-white/90">{item.subtitle}</p>
+                <p className="text-sm font-semibold leading-tight text-[var(--text-primary)]">
+                  {item.title}
+                </p>
+                <p className="text-xs text-[var(--text-secondary)]">{item.subtitle}</p>
               </div>
             </div>
           ))}
@@ -441,7 +542,7 @@ export default function Home() {
             <motion.div
               key={item.label}
               whileHover={{ y: -4 }}
-              className="cursor-pointer rounded-xl border border-[#d9ebdc] bg-white p-4 shadow-sm transition hover:shadow-md"
+              className="cursor-pointer rounded-xl border border-[#f0dccd] bg-white p-4 shadow-sm transition hover:shadow-md"
             >
               <Link href={`/collections?type=${encodeURIComponent(item.type)}`}>
                 <img
@@ -459,18 +560,18 @@ export default function Home() {
       </section>
 
       <section className="bg-white py-14">
-        <div className="mx-auto grid w-[95%] max-w-[1280px] gap-8 rounded-2xl border border-[#d9ebdc] p-8 md:grid-cols-2">
+        <div className="mx-auto grid w-[95%] max-w-[1280px] gap-8 rounded-2xl border border-[#f0dccd] p-8 md:grid-cols-2">
           <div className="space-y-4">
-            <h2 className="text-3xl font-semibold text-[#4f3a35]">
+            <h2 className="text-3xl font-semibold text-[#4b2e2b]">
               Official Feature Highlights
             </h2>
-            <p className="text-[#5b4740]">
+            <p className="text-[#6b4a3f]">
               Crafted for long sessions, ergonomic posture support, and luxury
               home aesthetics.
             </p>
             <Link
               href="/collections"
-              className="premium-btn inline-block rounded-lg bg-[#63c66d] px-5 py-2.5 text-white transition hover:bg-[#49aa55]"
+              className="premium-btn inline-block rounded-lg bg-[#c7794a] px-5 py-2.5 text-white transition hover:bg-[#d18856]"
             >
               View Collection
             </Link>
@@ -480,7 +581,7 @@ export default function Home() {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="rounded-xl bg-[#63c66d] p-6 text-white"
+            className="rounded-xl bg-[#c7794a] p-6 text-white"
           >
             <h3 className="mb-4 text-xl font-semibold">
               Why customers trust us
@@ -542,28 +643,28 @@ export default function Home() {
               our customers always come first.
             </p>
 
-            <div className="grid grid-cols-3 gap-4 rounded-xl bg-white p-6 text-center shadow-sm border border-[#4d8f58]/20">
+            <div className="grid grid-cols-3 gap-4 rounded-xl bg-white p-6 text-center shadow-sm border border-[#c7794a]/25">
   
   <div>
-    <p className="text-2xl font-bold text-[#4d8f58]">10+</p>
-    <p className="text-sm text-[#4d8f58]">Categories</p>
+    <p className="text-2xl font-bold text-[#7a4b2f]">10+</p>
+    <p className="text-sm text-[#7a4b2f]">Categories</p>
   </div>
 
   <div>
-    <p className="text-2xl font-bold text-[#4d8f58]">100+</p>
-    <p className="text-sm text-[#4d8f58]">Products</p>
+    <p className="text-2xl font-bold text-[#7a4b2f]">100+</p>
+    <p className="text-sm text-[#7a4b2f]">Products</p>
   </div>
 
   <div>
-    <p className="text-2xl font-bold text-[#4d8f58]">99%</p>
-    <p className="text-sm text-[#4d8f58]">Satisfied Customer</p>
+    <p className="text-2xl font-bold text-[#7a4b2f]">99%</p>
+    <p className="text-sm text-[#7a4b2f]">Satisfied Customer</p>
   </div>
 
 </div>
 
 <Link
   href="/about"
-  className="premium-btn mt-6 inline-block rounded-lg border border-[#4d8f58] px-6 py-2 text-[#4d8f58] transition hover:bg-[#4d8f58] hover:text-white"
+  className="premium-btn mt-6 inline-block rounded-lg border border-[#c7794a] px-6 py-2 font-semibold text-white transition hover:bg-[#c7794a] hover:text-white"
 >
   Know More
 </Link>
@@ -582,7 +683,7 @@ export default function Home() {
           </p>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {products.map((item) => (
+            {displayProducts.map((item) => (
               <motion.div
                 key={item.id}
                 whileHover={{ y: -8 }}
@@ -595,11 +696,21 @@ export default function Home() {
                   </span>
 
                   {/* Image */}
-                  <img
-                    src={item.img}
-                    alt={item.name}
-                    className="h-[180px] w-full object-contain transition duration-500 group-hover:scale-110 group-hover:opacity-0"
-                  />
+                  {item.detailHref ? (
+                    <Link href={item.detailHref}>
+                      <img
+                        src={item.img}
+                        alt={item.name}
+                        className="h-[180px] w-full object-contain transition duration-500 group-hover:scale-110 group-hover:opacity-0"
+                      />
+                    </Link>
+                  ) : (
+                    <img
+                      src={item.img}
+                      alt={item.name}
+                      className="h-[180px] w-full object-contain transition duration-500 group-hover:scale-110 group-hover:opacity-0"
+                    />
+                  )}
 
                   {/* Hover Image */}
                   {item.hoverImg && (
@@ -617,15 +728,31 @@ export default function Home() {
                 </div>
 
                 {/* Name */}
-                <h3 className="mt-3 line-clamp-2 text-sm font-medium text-stone-700 hover:underline cursor-pointer">
-                  {item.name}
-                </h3>
-                <p className="mt-1 text-xs uppercase tracking-wide text-stone-500">
+                {item.detailHref ? (
+                  <Link
+                    href={item.detailHref}
+                    className="mt-3 line-clamp-2 block text-sm font-medium text-stone-700 hover:underline"
+                  >
+                    {item.name}
+                  </Link>
+                ) : (
+                  <h3 className="mt-3 line-clamp-2 text-sm font-medium text-stone-700 hover:underline cursor-pointer">
+                    {item.name}
+                  </h3>
+                )}
+                <p className="mt-1 text-xs uppercase tracking-wide text-stone-600">
                   {item.category}
                 </p>
+                {item.features?.length ? (
+                  <ul className="mt-2 space-y-1 text-xs text-stone-600">
+                    {item.features.slice(0, 3).map((f) => (
+                      <li key={f}>- {f}</li>
+                    ))}
+                  </ul>
+                ) : null}
                 {/* Price */}
                 <div className="mt-2">
-                  <p className="text-sm text-stone-400 line-through">
+                  <p className="text-sm text-stone-500 line-through">
                     {item.oldPrice}
                   </p>
                   <p className="text-lg font-semibold text-stone-900">
@@ -637,7 +764,7 @@ export default function Home() {
                 <button
                   onClick={() =>
                     addToCart({
-                      id: item.id,
+                      id: item.slug ?? item.id,
                       name: item.name,
                       img: item.img,
                       price: getNumericPrice(item.price),
@@ -685,7 +812,7 @@ export default function Home() {
               >
                 <h3 className="font-semibold text-stone-900">{item.name}</h3>
 
-                <p className="text-sm text-stone-500">
+                <p className="text-sm text-stone-600">
                   {item.reviewed_at ?? "Recently"}
                 </p>
 
@@ -693,11 +820,11 @@ export default function Home() {
                   {"★".repeat(Math.max(1, Math.min(item.rating, 5)))}
                 </div>
 
-                <p className="mt-3 text-sm leading-relaxed text-stone-600">
+                <p className="mt-3 text-sm leading-relaxed text-stone-700">
                   {item.review_text}
                 </p>
 
-                <p className="mt-4 text-xs text-stone-500">
+                <p className="mt-4 text-xs text-stone-600">
                   Posted on{" "}
                   <span className="font-bold">
                     {item.source_label || "Google"}
@@ -707,17 +834,17 @@ export default function Home() {
             ))}
           </div>
           {reviewLoading ? (
-            <p className="mt-4 text-sm text-stone-500">Loading reviews...</p>
+            <p className="mt-4 text-sm text-stone-600">Loading reviews...</p>
           ) : null}
         </div>
       </section>
 
-      <section className="w-full bg-gradient-to-r from-[#63c66d] to-[#4d8f58] py-8">
+      <section className="w-full bg-gradient-to-r from-[#c7794a] to-[#7a4b2f] py-8">
         <div className="mx-auto w-full max-w-[1280px] px-4 text-center sm:px-6 md:px-12">
-          <h2 className="mb-2 text-2xl font-semibold text-white">
+          <h2 className="mb-2 text-2xl font-semibold text-white drop-shadow-[0_4px_14px_rgba(0,0,0,0.35)]">
             Our Online Marketplace Presence
           </h2>
-          <p className="mb-6 text-sm text-white/90">
+          <p className="mb-6 text-sm text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.35)]">
             Trusted platforms where Kila wellness products are available.
           </p>
 
