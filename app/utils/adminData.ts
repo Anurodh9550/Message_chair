@@ -1,3 +1,8 @@
+/**
+ * Legacy demo shapes only — catalog/contact/warranty seed DB via backend:
+ * `python manage.py seed_frontend_data`
+ * SiteChrome uses STORAGE_KEYS.featureSettings only.
+ */
 export const STORAGE_KEYS = {
   products: "admin_products",
   contactSubmissions: "admin_contact_submissions",
