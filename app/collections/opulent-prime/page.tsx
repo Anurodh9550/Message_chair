@@ -3,8 +3,14 @@
 import Image from "next/image";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useStore } from "../../context/StoreContext";
+
+const PRODUCT_ID = "opulent-prime-ultra";
+const PRODUCT_NAME = "Opulent Prime Ultra Luxurious Massage Chair";
+const PRODUCT_PRICE = 362999;
 
 export default function OpulentPrimePage() {
+  const { addToCart } = useStore();
   const images = ["IMG_1356_1.png", "main2.png", "main3.png", "main4.png"];
 
   const products = [
@@ -163,8 +169,8 @@ export default function OpulentPrimePage() {
               ₹3,62,999
             </span>
 
-            {/* SALE TAG */}
-            <span className="bg-[#2d3748] text-white text-[11px] px-3 py-1 rounded-full font-medium">
+            {/* SALE — brand brown + white text (readable on any theme) */}
+            <span className="rounded-full bg-[#7a4b2f] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-white shadow-md ring-2 ring-white/90">
               Sale
             </span>
           </div>
@@ -172,7 +178,18 @@ export default function OpulentPrimePage() {
           <p className="text-[13px] text-[#8a8f95] -mt-2">Taxes included.</p>
 
           {/* 🔥 BUTTON */}
-          <button className="w-full bg-[#59c86b] hover:bg-[#45b85b] text-white py-3 rounded-md text-[18px] font-medium transition">
+          <button
+            type="button"
+            onClick={() =>
+              addToCart({
+                id: PRODUCT_ID,
+                name: PRODUCT_NAME,
+                img: `/mainn/${selectedImage}`,
+                price: PRODUCT_PRICE,
+              })
+            }
+            className="w-full rounded-md bg-[#59c86b] py-3 text-[18px] font-medium text-white transition hover:bg-[#45b85b]"
+          >
             Add to cart
           </button>
 
@@ -351,7 +368,7 @@ export default function OpulentPrimePage() {
               </div>
 
               {/* SALE TAG */}
-              <span className="inline-block mt-2 bg-gray-900 text-white text-xs px-3 py-1 rounded-full">
+              <span className="mt-2 inline-block rounded-full bg-[#7a4b2f] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-sm ring-1 ring-white/80">
                 Sale
               </span>
             </motion.div>

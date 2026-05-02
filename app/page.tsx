@@ -677,13 +677,23 @@ export default function Home() {
 
       <section className="bg-white py-14">
         <div className="mx-auto w-[95%] max-w-[1280px]">
-          <h2 className="mb-2 text-3xl font-semibold text-stone-900">
-            All Collections
-          </h2>
-          <p className="mb-10 text-stone-600">
-            Explore our complete massage chair range curated for home, office,
-            and premium wellness needs.
-          </p>
+          <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-2xl">
+              <h2 className="mb-2 text-3xl font-semibold text-stone-900">
+                All Collections
+              </h2>
+              <p className="text-stone-600">
+                Explore our complete massage chair range curated for home,
+                office, and premium wellness needs.
+              </p>
+            </div>
+            <Link
+              href="/collections"
+              className="inline-flex shrink-0 items-center justify-center self-start rounded-lg bg-[#c7794a] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d18856] sm:self-auto"
+            >
+              View all
+            </Link>
+          </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {displayProducts.map((item) => (
@@ -692,9 +702,9 @@ export default function Home() {
                 whileHover={{ y: -8 }}
                 className="group rounded-2xl border border-stone-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-xl"
               >
-                <div className="relative overflow-hidden rounded-xl">
-                  {/* Discount */}
-                  <span className="absolute right-2 top-2 z-10 rounded bg-green-500 px-2 py-1 text-xs text-white">
+                <div className="relative overflow-hidden rounded-xl bg-stone-50">
+                  {/* Discount % — brand copper, white text */}
+                  <span className="absolute right-2 top-2 z-10 rounded-md bg-[#c7794a] px-2.5 py-1 text-xs font-bold tabular-nums text-white shadow-md ring-1 ring-white/70">
                     {item.discount}
                   </span>
 
@@ -720,12 +730,18 @@ export default function Home() {
                     <img
                       src={item.hoverImg}
                       alt="hover"
-                      className="absolute top-0 left-0 h-[180px] w-full object-contain opacity-0 transition duration-500 group-hover:opacity-100 group-hover:scale-110"
+                      className="absolute left-0 top-0 z-[1] h-[180px] w-full object-contain opacity-0 transition duration-500 group-hover:scale-110 group-hover:opacity-100"
                     />
                   )}
 
-                  {/* Tag */}
-                  <span className="absolute bottom-2 left-2 rounded-full bg-gray-800 px-3 py-1 text-xs text-white">
+                  {/* Sale / Sold out — deep brown brand, white text; sold out slightly muted */}
+                  <span
+                    className={`absolute bottom-2 left-2 z-10 rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-white shadow-lg ring-2 ring-white/90 [text-shadow:_0_1px_2px_rgb(0_0_0_/_35%)] ${
+                      item.tag === "Sold out"
+                        ? "bg-stone-600 ring-white/70"
+                        : "bg-[#7a4b2f]"
+                    }`}
+                  >
                     {item.tag}
                   </span>
                 </div>
@@ -780,7 +796,7 @@ export default function Home() {
                       : "border-stone-900 group-hover:bg-black group-hover:text-white"
                   }`}
                 >
-                  {item.tag === "Sold out" ? "Sold out" : "Add to cart"}
+                  {item.tag === "Sold out" ? "Sold out" : "Add to Cart"}
                 </button>
               </motion.div>
             ))}
@@ -805,9 +821,18 @@ export default function Home() {
               </span>
             </span>
           </div>
-          
+
+          <div className="mt-6 flex justify-center">
+            <Link
+              href="/reviews"
+              className="inline-flex items-center justify-center rounded-lg border border-[#c7794a] bg-white px-5 py-2.5 text-sm font-semibold text-[#7a4b2f] shadow-sm transition hover:bg-[#c7794a] hover:text-white"
+            >
+              View all
+            </Link>
+          </div>
+
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {reviewList.map((item) => (
+            {reviewList.slice(0, 3).map((item) => (
               <motion.div
                 key={item.id}
                 whileHover={{ y: -5 }}
