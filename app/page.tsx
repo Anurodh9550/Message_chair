@@ -6,119 +6,6 @@ import { useState, useEffect } from "react";
 import { BadgeCheck, ShieldCheck, Truck, Wallet } from "lucide-react";
 import { getApiBaseUrl } from "./utils/apiBase";
 
-const products = [
-  {
-    id: "kila-opulant-neo",
-    name: "Opulant Neo Massage Chair",
-    img: "/items/p1.jpg",
-    hoverImg: "/items/p3.jpg",
-    price: "Rs. 339,999.00",
-    oldPrice: "Rs. 399,000.00",
-    discount: "14%",
-    tag: "Sale",
-    category: "Premium 4D",
-  },
-  {
-    id: "kila-royal-recline",
-    name: "Royal Recline Massage Chair",
-    img: "/items/p3.jpg",
-    hoverImg: "/items/p1.jpg",
-    price: "Rs. 289,999.00",
-    oldPrice: "Rs. 349,000.00",
-    discount: "17%",
-    tag: "Sale",
-    category: "Luxury Series",
-  },
-  {
-    id: "kila-majestic-neo",
-    name: "Majestic Neo Zero Gravity",
-    img: "/items/p2.jpg",
-    hoverImg: "/items/p3.jpg",
-    price: "Rs. 210,999.00",
-    oldPrice: "Rs. 295,000.00",
-    discount: "28%",
-    tag: "Sale",
-    category: "Zero Gravity",
-  },
-  {
-    id: "kila-serene-office",
-    name: "Serene Office Smart Chair",
-    img: "/items/p1.jpg",
-    hoverImg: "/items/p2.jpg",
-    price: "Rs. 161,499.00",
-    oldPrice: "Rs. 195,000.00",
-    discount: "17%",
-    tag: "Sale",
-    category: "Office Comfort",
-  },
-  {
-    id: "kila-magic-plus",
-    name: "Magic Plus Advanced Chair",
-    img: "/p5.png",
-    hoverImg: "/items/p3.jpg",
-    price: "Rs. 98,999.00",
-    oldPrice: "Rs. 245,000.00",
-    discount: "59%",
-    tag: "Sale",
-    category: "Family Choice",
-  },
-  {
-    id: "kila-elegant-body",
-    name: "Elegant Full Body Chair",
-    img: "/items/p2.jpg",
-    hoverImg: "/items/p1.jpg",
-    price: "Rs. 144,999.00",
-    oldPrice: "Rs. 189,000.00",
-    discount: "23%",
-    tag: "Sale",
-    category: "Full Body",
-  },
-  {
-    id: "kila-zen-heat",
-    name: "Zen Heat Therapy Chair",
-    img: "/items/p3.jpg",
-    hoverImg: "/items/p2.jpg",
-    price: "Rs. 124,999.00",
-    oldPrice: "Rs. 169,000.00",
-    discount: "26%",
-    tag: "Sale",
-    category: "Heat Therapy",
-  },
-  {
-    id: "kila-compact-lite",
-    name: "Compact Lite Massage Chair",
-    img: "/items/p1.jpg",
-    hoverImg: "/items/p3.jpg",
-    price: "Rs. 84,999.00",
-    oldPrice: "Rs. 119,000.00",
-    discount: "29%",
-    tag: "Sale",
-    category: "Compact Series",
-  },
-  {
-    id: "kila-regal-ai",
-    name: "Regal AI Voice Chair",
-    img: "/items/p2.jpg",
-    hoverImg: "/items/p1.jpg",
-    price: "Rs. 399,999.00",
-    oldPrice: "Rs. 449,000.00",
-    discount: "11%",
-    tag: "Sale",
-    category: "AI Smart",
-  },
-  {
-    id: "kila-dual-relief",
-    name: "Dual Relief Leg Massage Chair",
-    img: "/items/p3.jpg",
-    hoverImg: "/items/p2.jpg",
-    price: "Rs. 174,999.00",
-    oldPrice: "Rs. 219,000.00",
-    discount: "20%",
-    tag: "Sold out",
-    category: "Leg Care",
-  },
-];
-
 type HomeProduct = {
   id: number;
   name: string;
@@ -126,6 +13,7 @@ type HomeProduct = {
   price: string;
   old_price?: string;
   image_url?: string;
+  hover_image?: string;
   collection_name: string;
   in_stock: boolean;
   show_on_home?: boolean;
@@ -239,6 +127,7 @@ export default function Home() {
   const [reviewList, setReviewList] = useState<GoogleReview[]>(fallbackReviews);
   const [reviewLoading, setReviewLoading] = useState(true);
   const [homeProducts, setHomeProducts] = useState<HomeProduct[]>([]);
+  const [homeProductsLoading, setHomeProductsLoading] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -276,10 +165,14 @@ export default function Home() {
 
   useEffect(() => {
     const loadHomeProducts = async () => {
+      setHomeProductsLoading(true);
       try {
-        const response = await fetch(`${apiBase}/products/?ordering=home_order`, {
-          cache: "no-store",
-        });
+        const response = await fetch(
+          `${apiBase}/products/?ordering=home_order&page_size=200`,
+          {
+            cache: "no-store",
+          },
+        );
         if (!response.ok) throw new Error("products fetch failed");
         const payload = (await response.json()) as { results?: HomeProduct[] };
         const items = payload.results ?? [];
@@ -294,6 +187,8 @@ export default function Home() {
         setHomeProducts(ordered);
       } catch {
         setHomeProducts([]);
+      } finally {
+        setHomeProductsLoading(false);
       }
     };
     void loadHomeProducts();
@@ -311,42 +206,36 @@ export default function Home() {
     Math.max(reviewList.length, 1)
   ).toFixed(1);
 
-  const displayProducts: DisplayProductCard[] =
-    homeProducts.length > 0
-      ? homeProducts.map((item) => ({
-          id: `api-${item.id}`,
-          slug: item.slug,
-          detailHref: `/collections/${item.slug}`,
-          name: item.name,
-          img: item.image_url || "/items/p1.jpg",
-          hoverImg: item.image_url || "/items/p1.jpg",
-          price: formatCurrency(item.price),
-          oldPrice: item.old_price
-            ? formatCurrency(item.old_price)
-            : formatCurrency(item.price),
-          discount:
-            item.old_price && Number(item.old_price) > Number(item.price)
-              ? `${Math.round(
-                  ((Number(item.old_price) - Number(item.price)) /
-                    Number(item.old_price)) *
-                    100,
-                )}%`
-              : "New",
-          tag: item.in_stock ? "Sale" : "Sold out",
-          category: item.collection_name,
-          features: item.product_features ?? [],
-        }))
-      : products.map((item) => ({
-          id: item.id,
-          name: item.name,
-          img: item.img,
-          hoverImg: item.hoverImg,
-          price: item.price,
-          oldPrice: item.oldPrice,
-          discount: item.discount,
-          tag: item.tag,
-          category: item.category,
-        }));
+  const displayProducts: DisplayProductCard[] = homeProducts.map((item) => {
+    const mainImg = item.image_url || "/items/p1.jpg";
+    const hover =
+      item.hover_image && item.hover_image.trim()
+        ? item.hover_image.trim()
+        : mainImg;
+    return {
+      id: `api-${item.id}`,
+      slug: item.slug,
+      detailHref: `/collections/${item.slug}`,
+      name: item.name,
+      img: mainImg,
+      hoverImg: hover,
+      price: formatCurrency(item.price),
+      oldPrice: item.old_price
+        ? formatCurrency(item.old_price)
+        : formatCurrency(item.price),
+      discount:
+        item.old_price && Number(item.old_price) > Number(item.price)
+          ? `${Math.round(
+              ((Number(item.old_price) - Number(item.price)) /
+                Number(item.old_price)) *
+                100,
+            )}%`
+          : "New",
+      tag: item.in_stock ? "Sale" : "Sold out",
+      category: item.collection_name,
+      features: item.product_features ?? [],
+    };
+  });
 
   return (
     <div className="bg-[#f6f8fc] text-[#2b2b2b]">
@@ -695,6 +584,23 @@ export default function Home() {
             </Link>
           </div>
 
+          {homeProductsLoading ? (
+            <p className="rounded-xl border border-stone-200 bg-stone-50 px-5 py-10 text-center text-sm text-stone-600">
+              Loading catalog…
+            </p>
+          ) : displayProducts.length === 0 ? (
+            <p className="rounded-xl border border-amber-200 bg-amber-50 px-5 py-10 text-center text-sm text-stone-700">
+              No products loaded from the server. Add products in{" "}
+              <Link href="/admin" className="font-semibold text-[#7a4b2f] underline">
+                Admin
+              </Link>{" "}
+              or run{" "}
+              <code className="rounded bg-white px-1 py-0.5 text-xs">
+                python manage.py seed_frontend_data
+              </code>{" "}
+              on the backend.
+            </p>
+          ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {displayProducts.map((item) => (
               <motion.div
@@ -801,6 +707,7 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+          )}
         </div>
       </section>
 

@@ -23,132 +23,9 @@ type ApiProduct = {
   price: string;
   old_price?: string;
   image_url?: string;
+  hover_image?: string;
   product_features?: string[];
 };
-
-const collectionDetails: CollectionDetail[] = [
-  {
-    slug: "opulent-neo",
-    title: "Opulent Neo Massage Chair",
-    subtitle: "Premium 4D robotic relaxation for home and office wellness.",
-    price: "Rs. 339,999.00",
-    oldPrice: "Rs. 399,000.00",
-    image: "/items/p1.jpg",
-    highlights: [
-      "4D Intelligent Rollers",
-      "Zero Gravity Recline",
-      "Heat Therapy",
-    ],
-  },
-  {
-    slug: "enigma-plus",
-    title: "Enigma Plus Chair",
-    subtitle: "Smart massage programs with deep tissue and calf support.",
-    price: "Rs. 289,999.00",
-    oldPrice: "Rs. 349,000.00",
-    image: "/items/p3.jpg",
-    highlights: ["AI Body Scan", "Foot & Calf Care", "Bluetooth Controls"],
-  },
-  {
-    slug: "magic-plus",
-    title: "Magic Plus Advanced Chair",
-    subtitle: "Compact premium comfort with heat and zero gravity modes.",
-    price: "Rs. 98,999.00",
-    oldPrice: "Rs. 245,000.00",
-    image: "/p5.png",
-    highlights: ["Space Saving Design", "Heat Therapy", "Family Friendly"],
-  },
-  {
-    slug: "majestic-neo",
-    title: "Majestic Neo Zero Gravity",
-    subtitle: "Balanced full-body therapy with luxury recline comfort.",
-    price: "Rs. 210,999.00",
-    oldPrice: "Rs. 295,000.00",
-    image: "/items/p2.jpg",
-    highlights: ["Zero Gravity", "Air Compression Massage", "Back Relief Mode"],
-  },
-  {
-    slug: "eye-massager",
-    title: "Eye Massager",
-    subtitle: "Gentle eye care for stress reduction and quick relaxation.",
-    price: "Rs. 8,999.00",
-    oldPrice: "Rs. 12,999.00",
-    image: "/items/p1.jpg",
-    highlights: ["Heat Compress", "Vibration Therapy", "Portable Use"],
-  },
-  {
-    slug: "hand-massager",
-    title: "Hand Massager",
-    subtitle: "Targeted palm and finger relief after long work sessions.",
-    price: "Rs. 7,499.00",
-    oldPrice: "Rs. 10,499.00",
-    image: "/items/p2.jpg",
-    highlights: ["Air Pressure Massage", "Portable Build", "Easy Controls"],
-  },
-  {
-    slug: "massage-cushion",
-    title: "Massage Cushion",
-    subtitle: "Portable back and waist support for chair, car, or office use.",
-    price: "Rs. 5,999.00",
-    oldPrice: "Rs. 8,499.00",
-    image: "/items/p3.jpg",
-    highlights: ["Dual Node Massage", "Heat Option", "Multi-Use Design"],
-  },
-  {
-    slug: "eden-foot",
-    title: "Eden Foot Massager",
-    subtitle: "Comfortable foot care with rolling and kneading therapy.",
-    price: "Rs. 20,999.00",
-    oldPrice: "Rs. 28,999.00",
-    image: "/items/p1.jpg",
-    highlights: ["Kneading Rollers", "Relax Mode", "Deep Tissue Relief"],
-  },
-  {
-    slug: "alis-foot",
-    title: "Alis Foot Massager",
-    subtitle: "Compact massager for daily leg and foot relaxation.",
-    price: "Rs. 18,499.00",
-    oldPrice: "Rs. 24,999.00",
-    image: "/items/p2.jpg",
-    highlights: ["Compact Body", "Easy Cleaning", "Gentle Compression"],
-  },
-  {
-    slug: "sage-leg",
-    title: "Sage Leg Massager",
-    subtitle: "Relieve leg fatigue with dynamic compression and heat support.",
-    price: "Rs. 15,999.00",
-    oldPrice: "Rs. 21,999.00",
-    image: "/items/p3.jpg",
-    highlights: ["Leg Compression", "Heat Relaxation", "Adjustable Modes"],
-  },
-  {
-    slug: "cosset-leg",
-    title: "Cosset Leg Massager",
-    subtitle: "Advanced leg therapy for recovery and daily comfort.",
-    price: "Rs. 17,999.00",
-    oldPrice: "Rs. 23,999.00",
-    image: "/items/p1.jpg",
-    highlights: ["Calf Coverage", "Pressure Control", "Recovery Programs"],
-  },
-  {
-    slug: "minilux-back",
-    title: "Minilux Back Massager",
-    subtitle: "Portable back relaxation with focused shiatsu points.",
-    price: "Rs. 6,999.00",
-    oldPrice: "Rs. 9,999.00",
-    image: "/items/p2.jpg",
-    highlights: ["Shiatsu Nodes", "Heat Assist", "Office Friendly"],
-  },
-  {
-    slug: "smart-pad",
-    title: "Smart Pad Massager",
-    subtitle: "Lightweight portable massage pad for neck and back support.",
-    price: "Rs. 4,999.00",
-    oldPrice: "Rs. 7,499.00",
-    image: "/items/p3.jpg",
-    highlights: ["Portable Pad", "Quick Sessions", "Rechargeable"],
-  },
-];
 
 const getNumericPrice = (value: string) => {
   const cleaned = value.replace(/[^\d.]/g, "");
@@ -171,28 +48,28 @@ export default function CollectionDetailPage({
   const { addToCart } = useStore();
   const resolvedParams = use(params);
   const apiBase = getApiBaseUrl();
-  const localProduct = collectionDetails.find(
-    (item) => item.slug === resolvedParams.slug,
-  );
   const [apiProduct, setApiProduct] = useState<CollectionDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadProduct = async () => {
+      setLoading(true);
       try {
-        const response = await fetch(
-          `${apiBase}/products/?search=${encodeURIComponent(resolvedParams.slug)}`,
-          { cache: "no-store" },
-        );
+        const qs = new URLSearchParams({
+          slug: resolvedParams.slug,
+          page_size: "5",
+        });
+        const response = await fetch(`${apiBase}/products/?${qs.toString()}`, {
+          cache: "no-store",
+        });
         if (!response.ok) throw new Error("product fetch failed");
         const payload = (await response.json()) as { results?: ApiProduct[] };
-        const found = (payload.results ?? []).find(
-          (item) => item.slug === resolvedParams.slug,
-        );
+        const found = payload.results?.[0];
         if (!found) {
           setApiProduct(null);
           return;
         }
+        const img = found.image_url || "/items/p1.jpg";
         setApiProduct({
           slug: found.slug,
           title: found.name,
@@ -201,7 +78,7 @@ export default function CollectionDetailPage({
           oldPrice: found.old_price
             ? formatCurrency(found.old_price)
             : formatCurrency(found.price),
-          image: found.image_url || "/items/p1.jpg",
+          image: img,
           highlights: found.product_features?.length
             ? found.product_features
             : ["Premium Build", "Comfort Therapy", "Daily Wellness"],
@@ -215,7 +92,7 @@ export default function CollectionDetailPage({
     void loadProduct();
   }, [apiBase, resolvedParams.slug]);
 
-  const product = apiProduct ?? localProduct;
+  const product = apiProduct;
 
   if (loading && !product) {
     return (
@@ -235,7 +112,8 @@ export default function CollectionDetailPage({
             Collection not found
           </h1>
           <p className="mt-2 text-stone-600">
-            This product page is not available right now.
+            This product is not in the catalog yet. Add it from the admin panel or
+            run backend seed.
           </p>
           <Link
             href="/collections"
@@ -285,6 +163,7 @@ export default function CollectionDetailPage({
 
           <div className="mt-6 flex flex-wrap gap-3">
             <button
+              type="button"
               onClick={() =>
                 addToCart({
                   id: product.slug,

@@ -376,7 +376,9 @@ export default function AdminPage() {
       usersResult,
     ] = await Promise.allSettled([
       fetchJson<{ results: Collection[] }>(`${API_BASE}/collections/`),
-      fetchJson<{ results: Product[] }>(`${API_BASE}/products/`),
+      fetchJson<{ results: Product[] }>(
+        `${API_BASE}/products/?page_size=500`,
+      ),
       fetchJson<Stats>(`${API_BASE}/admin-stats/`),
       fetchJson<{ results: ContactSubmission[] }>(`${API_BASE}/contact-submissions/`),
       fetchJson<{ results: WarrantyClaim[] }>(`${API_BASE}/warranty-claims/`),
@@ -534,10 +536,10 @@ export default function AdminPage() {
     () => buildSlug(productForm.name || ""),
     [productForm.name],
   );
-  const suggestedEditSlug = useMemo(
-    () => buildSlug(editProductForm.name || ""),
-    [editProductForm.name],
-  );
+  const editingProductStoredSlug = useMemo(() => {
+    if (editingProductId === null) return "";
+    return products.find((p) => p.id === editingProductId)?.slug ?? "";
+  }, [editingProductId, products]);
 
   const groupedCollections = useMemo(
     () =>
@@ -670,14 +672,16 @@ export default function AdminPage() {
       setProductFormError("Please enter a valid product name.");
       return;
     }
-    const slugExists = products.some((item) => item.slug === baseSlug);
-    const slug = slugExists ? `${baseSlug}-${Date.now()}` : baseSlug;
+    // Always unique: API list was paginated (only 12 before), so duplicate slugs in DB escaped checks.
+    const slug = `${baseSlug}-${Date.now().toString(36)}`;
     const formData = new FormData();
     formData.append("collection", productForm.collection);
     formData.append("name", productForm.name);
     formData.append("slug", slug);
     formData.append("price", productForm.price);
-    formData.append("old_price", productForm.oldPrice);
+    if (productForm.oldPrice.trim()) {
+      formData.append("old_price", productForm.oldPrice.trim());
+    }
     formData.append("short_description", productForm.description);
     formData.append(
       "product_features",
@@ -811,9 +815,11 @@ export default function AdminPage() {
     const formData = new FormData();
     formData.append("collection", editProductForm.collection);
     formData.append("name", editProductForm.name);
-    formData.append("slug", suggestedEditSlug);
+    // Do not PATCH slug — avoids "slug already exists" when renaming matches another product's slug.
     formData.append("price", editProductForm.price);
-    formData.append("old_price", editProductForm.oldPrice);
+    if (editProductForm.oldPrice.trim()) {
+      formData.append("old_price", editProductForm.oldPrice.trim());
+    }
     formData.append("short_description", editProductForm.description);
     formData.append(
       "product_features",
@@ -2068,9 +2074,9 @@ export default function AdminPage() {
                         Upload new image only if you want to replace current one.
                       </p>
                       <p className="md:col-span-2 rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-600">
-                        Frontend slug preview:{" "}
+                        Product URL slug (unchanged on save):{" "}
                         <span className="font-semibold text-slate-800">
-                          {suggestedEditSlug || "auto-generated"}
+                          {editingProductStoredSlug || "—"}
                         </span>
                       </p>
                     </div>
