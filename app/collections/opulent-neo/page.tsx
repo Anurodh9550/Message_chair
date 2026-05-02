@@ -22,20 +22,8 @@ export default function OpulentPrimePage() {
       oldPrice: "₹2,45,000",
       discount: "59%",
     },
-    {
-      name: "Eden Foot Leg & Calf Massager",
-      img: "/products/p3.png",
-      price: "₹20,999",
-      oldPrice: "₹28,999",
-      discount: "27%",
-    },
-    {
-      name: "Smart Pad Massage Cushion",
-      img: "/products/p4.png",
-      price: "₹5,999",
-      oldPrice: "",
-      discount: "",
-    },
+    
+    
     {
       name: "Luxury Recliner Chair",
       img: "/products/p5.png",
